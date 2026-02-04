@@ -1,0 +1,61 @@
+{
+  "_comment_robot": "단일 로봇 설정 (전 구역 담당)",
+  "simulation_mode": false,
+  "robot": {
+    "brand": "neuromeka",
+    "robot_1": {
+      "name": "Single_Robot",
+      "ip": "192.168.0.9", 
+      "role": "full_operation"
+    }
+  },
+
+  "_comment_kiosk": "사용할 키오스크 브랜드를 선택합니다. (사용 가능: easypos, tableon)",
+  "kiosk": {
+    "brand": "easypos",
+    "easypos": {
+      "host": "192.168.0.164",
+      "port": 5432,
+      "dbname": "easypos",
+      "user": "pos_label",
+      "password": "label"
+    }
+  },
+
+  "_comment_coffee": "커피 머신 설정 (사용 가능: eversys, thermoplan)",
+  "coffee_machine": {
+    "brand": "thermoplan",
+    "port": "/dev/ttyUSBCoffee",
+    "baudrate": 115200,
+    "simulation": false,
+    "thermoplan_product_map": {
+      "1": "Double Espresso_2",
+      "2": "Milk Coffee_1",
+      "3": "Milk Coffee (Milk First)_1"
+    }
+  },
+
+  "_comment_ice": "제빙기 설정 (사용 가능: nakajo, icetro)",
+  "ice_machine": {
+    "brand": "icetro",
+    "port": "/dev/ttyUSBIce",
+    "baudrate": 9600,
+    "simulation": false
+  },
+
+  "_comment_arduino": "픽업대 센서용 아두이노 설정",
+  "arduino": {
+    "pickup_1": {
+      "port": "/dev/ttyARD1",
+      "baudrate": 9600
+    }
+  },
+
+  "_comment_pickup": "픽업 슬롯 할당 모드 (sensor: 센서 기반 빈 슬롯 탐색, rotate: 1->2->3->4 순환)",
+  "pickup_mode": "sensor",
+
+  "_comment_zones": "작업 구역 정의 (고객 픽업대 1개)",
+  "zones": {
+    "customer_pickup": {"capacity": 4, "description": "고객 픽업대"}
+  }
+}

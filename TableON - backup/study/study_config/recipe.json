@@ -1,0 +1,15 @@
+[
+  {
+    "menu_code": 1,
+    "menu_name": "아메리카노(HOT)",
+    "cup_num": 1,
+    "water_ext_time": 0.0,
+    "ice_ext_time": 0.0,
+    "sparkling_ext_time": 0.0,
+    "hotwater_ext_time": 10.0,
+    "coffee_ext_time": 30.0,
+    "coffee_product_id": 1,
+    "syrups": [],
+    "milk_boolean": false
+  }
+]

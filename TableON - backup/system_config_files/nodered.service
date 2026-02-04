@@ -1,0 +1,18 @@
+[Unit]
+Description=Node-RED
+After=network.target network-online.target
+Wants=network-online.target
+
+[Service]
+ExecStart=/usr/bin/node-red
+User=root
+Group=root
+WorkingDirectory=/home/TableON/nodered
+Nice=10
+SyslogIdentifier=Node-RED
+StandardOutput=syslog
+Restart=no
+KillSignal=SIGINT
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,17 @@
+[Unit]
+Description=Run Python Scripts
+After=network.target
+
+[Service]
+ExecStartPre=/bin/sleep 10
+ExecStart=/bin/bash /home/TableON/scripts/run_python_scripts.sh
+User=root
+WorkingDirectory=/home/TableON
+StandardOutput=journal
+StandardError=journal
+Restart=no
+RemainAfterExit=yes
+Environment="PATH=/usr/bin:/usr/local/bin"
+
+[Install]
+WantedBy=multi-user.target

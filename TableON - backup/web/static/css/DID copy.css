@@ -1,0 +1,162 @@
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700;900&display=swap');
+
+body {
+    margin: 0;
+    padding: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: #000;
+    /* 레터박스 색상 */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+    font-family: 'Noto Sans KR', sans-serif;
+}
+
+.main-container {
+    position: relative;
+    /* 16:9 비율 유지 (화면 꽉 차게 하되 비율 고정) */
+    width: 100vw;
+    height: 56.25vw;
+    /* 100 * 9 / 16 */
+    max-height: 100vh;
+    max-width: 177.78vh;
+    /* 100 * 16 / 9 */
+
+    /* 배경 이미지 설정 (기본값 없음, JS에서 클래스로 주입) */
+    background-size: 100% 100%;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+/* URL에 따른 배경 이미지 설정 */
+.bg-hall {
+    background-image: url('../img/image_hall.png');
+}
+
+.bg-window {
+    background-image: url('../img/image_takeout.png');
+}
+
+/* === 공통 레이아웃 설정 === */
+/* 좌측 영역 공통 너비 및 수평 위치 */
+.left-align {
+    position: absolute;
+    left: 8%;
+    /* 좌측 여백 */
+    width: 53%;
+    /* 전체 박스 너비 */
+    display: flex;
+    justify-content: space-between;
+    /* 슬롯 간 간격 균등 */
+}
+
+.pickup-menu-container {
+    /* 개별 위치 지정을 위해 컨테이너의 flex 레이아웃 제거 */
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    pointer-events: none;
+    /* 클릭 통과 (필요시) */
+}
+
+/* === [영역 2] 메뉴이름 개별 위치 설정 === */
+.menu-slot {
+    position: absolute;
+    /* width/height는 필요에 따라 개별 또는 공통 지정 */
+    width: 15%;
+    height: 10%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+}
+
+/* 각 슬롯별 좌표 (직접 수정 필요) */
+#menu-slot-1 {
+    top: 45%;
+    left: 8.5%;
+}
+
+#menu-slot-2 {
+    top: 45%;
+    left: 29.5%;
+    /* 예시: 적당히 떨어뜨림 */
+}
+
+#menu-slot-3 {
+    top: 45%;
+    left: 50.12%;
+    /* 예시 */
+}
+
+/* === [영역 2] 메뉴이름 (아래쪽) === */
+.pickup-num-container {
+    position: absolute;
+    left: 7.2%;
+    width: 59.4%;
+    top: 70.1%;
+    height: 7.6%;
+    display: flex;
+    justify-content: space-between;
+}
+
+/* .menu-slot 공통 스타일은 위에서 재정의됨 */
+
+.num-slot {
+    width: 30%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    /* 수직 중앙 */
+    justify-content: center;
+    /* 수평 중앙 */
+    text-align: center;
+}
+
+.pickup-menu {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #333;
+    word-break: keep-all;
+    line-height: 1.3;
+}
+
+.pickup-num {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #ffffff;
+    word-break: keep-all;
+    line-height: 1.3;
+}
+
+/* === 우측: 대기 번호 영역 === */
+.waiting-container {
+    position: absolute;
+    top: 24%;
+    right: 1%;
+    width: 15%;
+    height: 74%;
+    overflow: hidden;
+}
+
+.waiting-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.waiting-item {
+    font-size: 3.5rem;
+    font-weight: 700;
+    color: #fff;
+    padding-bottom: 10px;
+    display: flex;
+    justify-content: flex-start;
+}

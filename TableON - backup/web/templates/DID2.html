@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Content-type" content="text/html; charset=UTF-8">
+    <title>Document</title>
+    <!-- DID2의 스타일과 부트스트랩은 그대로 사용합니다. -->
+    <link rel="stylesheet" href="/static/css/DID2.css">
+    <link rel="stylesheet" href="/static/css/bootstrap.css">
+
+    <!-- 필요한 JS 라이브러리를 로드합니다. -->
+    <script src="/static/js/axios/dist/axios.js"></script>
+    
+    <!-- 기존 DID2.js 대신 DID.js를 사용하도록 변경합니다. -->
+    <script type="text/javascript" charset="UTF-8" src="/static/js/DID.js"></script>
+</head>
+
+<body>
+    <!-- 
+      [변경점 1]
+      DID.js가 '.main-container'를 참조하므로, 오류 방지를 위해 최상위 div를 추가했습니다.
+      배경은 DID2.css의 .background-img가 계속 담당합니다.
+    -->
+    <div class="main-container">
+        <img class="background-img" src="/static/img/backgroundIMG.png" />
+        
+        <div class="row">
+            <div class="col-7" style="width: 62.5%;">
+                <div style="height: 37vh;"></div>
+                
+                <!-- 
+                  [변경점 2] 메뉴 이름 영역
+                  - DID.js가 제어할 수 있도록 p 태그의 id를 "menu-1", "menu-2", "menu-3"으로 변경했습니다.
+                  - DID.js는 3개의 슬롯만 지원하므로 4번 슬롯은 제거했습니다.
+                -->
+                <div class="order-menu">
+                    <div class="menu-box_1">
+                        <p id="menu-1"></p>
+                    </div>
+                    <div class="menu-box_2">
+                        <p id="menu-2"></p>
+                    </div>
+                    <div class="menu-box_3">
+                        <p id="menu-3"></p>
+                    </div>
+                </div>
+
+                <!-- 
+                  [변경점 3] 주문 번호 영역
+                  - DID.js가 제어할 수 있도록 p 태그의 id를 "num-1", "num-2", "num-3"으로 변경했습니다.
+                  - 마찬가지로 4번 슬롯은 제거했습니다.
+                -->
+                <div class="order-code">
+                    <div class="code-box_1">
+                        <p id="num-1"></p>
+                    </div>
+                    <div class="code-box_2">
+                        <p id="num-2"></p>
+                    </div>
+                    <div class="code-box_3">
+                        <p id="num-3"></p>
+                    </div>
+                </div>
+                <div style="height: 100%;"></div>
+            </div>
+        </div>
+
+        <!-- 
+          [변경점 4] 대기 번호 영역 추가
+          - DID.js가 대기 목록을 표시하기 위해 'waiting-list' id를 사용합니다.
+          - DID2.html에는 이 영역이 없었으므로 새로 추가했습니다.
+          - 이 목록이 화면에 잘 보이게 하려면 아래 'CSS 추가 권장 사항'을 참고하세요.
+        -->
+    </div>
+</body>
+
+</html>

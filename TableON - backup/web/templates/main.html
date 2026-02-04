@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kiosk</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+    <link rel="stylesheet" href="/static/css/bootstrap.css">
+    <script src="/static/js/axios/dist/axios.js"></script>
+    <script src="/static/js/socket.io-client/dist/socket.io.min.js"></script>
+    <script src="/static/js/main.js"></script>
+    <script src="/static/js/jquery/dist/jquery.js"></script>
+    <script src="/static/js/bootstrap.min.js"></script>
+</head>
+
+<body>
+    <button id="fullscreen" class="btn btn-primary" onclick="openFullScreenMode()">Full screen</button>
+    <div class="row" style="height: 100%;">
+        <div class="col-md-8">
+            <div class="top-line">
+                <img src="/static/img/logo.png" style="width: 17rem;" class="col-md-3">
+                <b>
+                    <p align="right" style="margin-bottom: 0.5%;">Coffee Order System</p>
+                </b>
+                <div class="long-line"></div>
+                <div class="menu">
+                    <div class="row">
+                        <div class="col-md-3" id="menu_1" onclick="addOrder(this)">
+                            <input type="hidden" value="아메리카노 (HOT)">
+                            <img src="/static/img/아메리카노(HOT).png" alt="">
+                        </div>
+                        <div class="col-md-3" id="menu_2" onclick="addOrder(this)">
+                            <input type="hidden" value="아메리카노 (ICE)">
+                            <img src="/static/img/아메리카노(ICE).png" alt="">
+                        </div>
+                        <div class="col-md-3" id="menu_3" onclick="addOrder(this)">
+                            <input type="hidden" value="헤즐넛 아메리카노 (HOT)">
+                            <img src="/static/img/아메리카노(HOT).png" alt="">
+                        </div>
+                        <div class="col-md-3" id="menu_4" onclick="addOrder(this)">
+                            <input type="hidden" value="헤즐넛 아메리카노 (ICE)">
+                            <img src="/static/img/아메리카노(ICE).png" alt="">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-3" id="menu_5" onclick="addOrder(this)">
+                            <input type="hidden" value="복숭아 아이스티">
+                            <img src="/static/img/복숭아아이스티.png" alt="">
+                        </div>
+                        <div class="col-md-3" id="menu_6" onclick="addOrder(this)">
+                            <input type="hidden" value="캐모마일 릴렉서">
+                            <img src="/static/img/캐모마일릴렉서.png" alt="">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 order-list">
+            <div style="margin-top: 26%;" class="top-line">
+                <b>
+                    <p align="right" style=" color: white;">Order List</p>
+                </b>
+                <div class="short-line" style="background-color: gray;"></div>
+                <div class="short-line" style="background-color: white;"></div>
+            </div>
+            <div class="menu-list">
+                <div class="row">
+                    <p class="menu-text">주문내역</p>
+                </div>
+
+                <div id="scl" class="scl">
+
+                </div>
+            </div>
+            <div class="bottom-line">
+                <div class="short-line"></div>
+                <div class="order-btn" data-toggle="modal" onclick="orderCheck()">
+                    <img src="/static/img/order_btn.png" alt="">
+                </div>
+            </div>
+        </div>
+        
+    </div>
+
+
+    <!-- modal -->
+
+    <div class="modal fade" id="orderModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 id="order_num" class="modal-title" id="exampleModalLabel"></h3>
+                </div>
+                <div id="order_check" class="modal-body">
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" onclick="requestOrder()">주문완료</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">취소</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</body>
+
+</html>

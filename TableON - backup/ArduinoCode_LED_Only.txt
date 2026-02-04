@@ -1,0 +1,195 @@
+#include <Adafruit_NeoPixel.h>
+
+/**
+ * ======================================================================================
+ * [프로젝트명] TableON 픽업대 LED 제어 시스템 (v1.0)
+ * [주요기능] 
+ *   1. 픽업대 LED 애니메이션 제어 (4채널 확장형)
+ *   2. RS-485 통신 기반 상태 보고 및 원격 제어
+ *   3. 센서 감지 후 3초 대기 점등 로직
+ * ======================================================================================
+ */
+
+// --------------------------------------------------------------------------------------
+// [1] 시스템 설정 및 상수 정의
+// --------------------------------------------------------------------------------------
+#define RS485_PORT Serial3      // FA-DUINO 32TA Ch3
+#define RS485_BAUDRATE 9600     // 통신 속도
+
+#define NUM_MODULES 4           // 픽업대 모듈 개수 (4개로 확장)
+#define LED_COUNT 32            // 모듈당 LED 개수
+#define GLOBAL_BRIGHTNESS 180   // 전체 밝기 (0~255)
+#define MAX_BRIGHTNESS 255
+#define BRIGHTNESS_STEP 15
+#define STEP_DELAY 20           // 애니메이션 속도 (ms)
+#define ON_DELAY 3000           // 센서 감지 후 점등 대기 시간 (3초)
+
+// --------------------------------------------------------------------------------------
+// [2] 핀 번호 할당
+// --------------------------------------------------------------------------------------
+// 픽업대 모듈 (LED & 센서)
+const int inputPins[NUM_MODULES] = {31, 32, 33, 34};
+const int outputPins[NUM_MODULES] = {6, 7, 8, 9};
+
+// --------------------------------------------------------------------------------------
+// [3] 전역 객체 및 상태 변수
+// --------------------------------------------------------------------------------------
+Adafruit_NeoPixel strips[NUM_MODULES] = {
+  Adafruit_NeoPixel(LED_COUNT, outputPins[0], NEO_GRB + NEO_KHZ800),
+  Adafruit_NeoPixel(LED_COUNT, outputPins[1], NEO_GRB + NEO_KHZ800),
+  Adafruit_NeoPixel(LED_COUNT, outputPins[2], NEO_GRB + NEO_KHZ800),
+  Adafruit_NeoPixel(LED_COUNT, outputPins[3], NEO_GRB + NEO_KHZ800)
+};
+
+// 픽업대 LED 상태 머신 정의
+enum State { IDLE, WAITING_FOR_ON, TURNING_ON, STEADY_ON, TURNING_OFF };
+struct Module {
+  State state = IDLE;
+  unsigned long stateStartTime = 0;
+  unsigned long lastAnimUpdate = 0;
+  int animStep = 0;
+  bool isSensorActive = false;
+};
+Module modules[NUM_MODULES];
+
+// 하트비트 LED용 변수
+unsigned long lastHeartbeatTime = 0;
+bool heartbeatState = false;
+
+// --------------------------------------------------------------------------------------
+// [4] 초기 설정 (setup)
+// --------------------------------------------------------------------------------------
+void setup() {
+  delay(500); // 전원 안정화 대기
+  
+  // 픽업대 핀 및 LED 초기화
+  for (int i = 0; i < NUM_MODULES; i++) {
+    pinMode(inputPins[i], INPUT_PULLUP); // 픽업대 센서는 PULLUP 유지
+    strips[i].begin();
+    strips[i].clear();
+    strips[i].show();
+  }
+
+  // 통신 시작
+  RS485_PORT.begin(RS485_BAUDRATE);
+  Serial.begin(115200); // 디버깅용
+  Serial.println("TableON Pickup LED System Started (4-Channel)");
+  
+  pinMode(LED_BUILTIN, OUTPUT);
+}
+
+// --------------------------------------------------------------------------------------
+// [5] 메인 루프 (loop)
+// --------------------------------------------------------------------------------------
+void loop() {
+  unsigned long currentTime = millis();
+
+  // 1. 시스템 동작 확인 (Heartbeat)
+  if (currentTime - lastHeartbeatTime > 1000) {
+    lastHeartbeatTime = currentTime;
+    heartbeatState = !heartbeatState;
+    digitalWrite(LED_BUILTIN, heartbeatState);
+  }
+  
+  // 2. 외부 통신 처리
+  handleRS485();
+  
+  // 3. 픽업대 LED 모듈 관리
+  for (int i = 0; i < NUM_MODULES; i++) {
+    // 센서 읽기 (Active High 로직 적용)
+    bool currentSensor = (digitalRead(inputPins[i]) == HIGH);
+    
+    if (modules[i].isSensorActive != currentSensor) {
+      modules[i].isSensorActive = currentSensor;
+    }
+    updateModule(i, currentSensor, currentTime);
+  }
+}
+
+// --------------------------------------------------------------------------------------
+// [6] 픽업대 LED 모듈 상태 관리 및 애니메이션
+// --------------------------------------------------------------------------------------
+void updateModule(int idx, bool sensorInput, unsigned long now) {
+  Module &m = modules[idx];
+  switch (m.state) {
+    case IDLE:
+      if (sensorInput) { m.state = WAITING_FOR_ON; m.stateStartTime = now; }
+      break;
+    case WAITING_FOR_ON:
+      if (!sensorInput) m.state = IDLE;
+      else if (now - m.stateStartTime >= ON_DELAY) { m.state = TURNING_ON; m.animStep = 0; }
+      break;
+    case TURNING_ON:
+      if (!sensorInput) { m.state = TURNING_OFF; m.animStep = 0; }
+      else runAnimation(idx, true, now);
+      break;
+    case STEADY_ON:
+      if (!sensorInput) { m.state = TURNING_OFF; m.animStep = 0; }
+      break;
+    case TURNING_OFF:
+      runAnimation(idx, false, now);
+      break;
+  }
+}
+
+void runAnimation(int idx, bool turningOn, unsigned long now) {
+  Module &m = modules[idx];
+  Adafruit_NeoPixel &strip = strips[idx];
+  if (now - m.lastAnimUpdate < STEP_DELAY) return;
+  m.lastAnimUpdate = now;
+  
+  for (int i = 0; i < LED_COUNT; i++) {
+    int offset = i * 8;
+    int brightness;
+    if (turningOn) brightness = constrain(m.animStep - offset, 0, MAX_BRIGHTNESS);
+    else brightness = constrain((MAX_BRIGHTNESS + LED_COUNT * 8 - m.animStep) - offset, 0, MAX_BRIGHTNESS);
+    
+    uint8_t scaled = brightness * GLOBAL_BRIGHTNESS / 255;
+    uint8_t r = scaled;
+    uint8_t g = scaled * 140 / 255;
+    uint8_t b = scaled * 35 / 255;
+    strip.setPixelColor(i, strip.Color(r, g, b));
+  }
+  strip.show();
+  m.animStep += BRIGHTNESS_STEP;
+  
+  int maxStep = MAX_BRIGHTNESS + LED_COUNT * 8;
+  if (m.animStep >= maxStep) {
+    if (turningOn) m.state = STEADY_ON;
+    else { m.state = IDLE; strip.clear(); strip.show(); }
+  }
+}
+
+// --------------------------------------------------------------------------------------
+// [7] RS-485 통신 프로토콜 처리
+// --------------------------------------------------------------------------------------
+void handleRS485() {
+  while (RS485_PORT.available() > 0) {
+    if (RS485_PORT.peek() == 'S') {
+      RS485_PORT.read();
+      sendSensorState();
+      continue;
+    }
+    if (RS485_PORT.available() < 2) return;
+    char idxChar = RS485_PORT.read();
+    if (idxChar == '\n' || idxChar == '\r') continue;
+    char cmdChar = RS485_PORT.read();
+    int index = idxChar - '0';
+    if (index >= 0 && index < NUM_MODULES) {
+      if (cmdChar == '1') {
+        if (modules[index].state == IDLE) { modules[index].state = WAITING_FOR_ON; modules[index].stateStartTime = millis(); }
+      } else if (cmdChar == '0') {
+        modules[index].state = TURNING_OFF;
+        modules[index].animStep = 0;
+      }
+    }
+  }
+}
+
+void sendSensorState() {
+  for (int i = 0; i < NUM_MODULES; i++) {
+    RS485_PORT.print(digitalRead(inputPins[i]) == HIGH);
+    if (i < NUM_MODULES - 1) RS485_PORT.print(",");
+  }
+  RS485_PORT.println();
+}

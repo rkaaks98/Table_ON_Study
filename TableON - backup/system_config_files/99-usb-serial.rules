@@ -1,0 +1,6 @@
+SUBSYSTEM=="tty", ATTRS{idVendor}=="1a86", ATTRS{idProduct}=="7523", KERNELS=="1-1.4.1", SYMLINK+="ttyARD1"
+SUBSYSTEM=="tty", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", KERNELS=="1-1.4.2", SYMLINK+="ttyUSBCoffee"
+SUBSYSTEM=="tty", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", KERNELS=="1-1.4.3", SYMLINK+="ttyUSBIce"
+SUBSYSTEM=="tty", ATTRS{idVendor}=="0843", ATTRS{idProduct}=="5740", KERNELS=="1-1.4.4", SYMLINK+="ttyARD2"
+SUBSYSTEM=="tty", ATTRS{idVendor}=="1a86", ATTRS{idProduct}=="7523", SYMLINK+="ttyUSB485"
+

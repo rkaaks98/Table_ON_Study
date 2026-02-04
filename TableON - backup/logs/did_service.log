@@ -1,0 +1,39 @@
+ * Serving Flask app 'did_service'
+ * Debug mode: off
+[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:9100
+ * Running on http://192.168.0.22:9100
+[33mPress CTRL+C to quit[0m
+[2026-01-19 04:58:32,395] ERROR in app: Exception on /web [GET]
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 1511, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 919, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/usr/local/lib/python3.10/dist-packages/flask/app.py", line 902, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+  File "/home/TableON/src/services/did_service.py", line 16, in web
+    return render_template('DID2.html')
+  File "/usr/local/lib/python3.10/dist-packages/flask/templating.py", line 149, in render_template
+    template = app.jinja_env.get_or_select_template(template_name_or_list)
+  File "/usr/local/lib/python3.10/dist-packages/jinja2/environment.py", line 1087, in get_or_select_template
+    return self.get_template(template_name_or_list, parent, globals)
+  File "/usr/local/lib/python3.10/dist-packages/jinja2/environment.py", line 1016, in get_template
+    return self._load_template(name, globals)
+  File "/usr/local/lib/python3.10/dist-packages/jinja2/environment.py", line 975, in _load_template
+    template = self.loader.load(self, name, self.make_globals(globals))
+  File "/usr/local/lib/python3.10/dist-packages/jinja2/loaders.py", line 126, in load
+    source, filename, uptodate = self.get_source(environment, name)
+  File "/usr/local/lib/python3.10/dist-packages/flask/templating.py", line 65, in get_source
+    return self._get_source_fast(environment, template)
+  File "/usr/local/lib/python3.10/dist-packages/flask/templating.py", line 96, in _get_source_fast
+    return loader.get_source(environment, template)
+  File "/usr/local/lib/python3.10/dist-packages/jinja2/loaders.py", line 215, in get_source
+    contents = f.read()
+  File "/usr/lib/python3.10/codecs.py", line 322, in decode
+    (result, consumed) = self._buffer_decode(data, self.errors, final)
+UnicodeDecodeError: 'utf-8' codec can't decode byte 0xc0 in position 256: invalid start byte
+127.0.0.1 - - [19/Jan/2026 04:58:32] "[35m[1mGET /web HTTP/1.1[0m" 500 -

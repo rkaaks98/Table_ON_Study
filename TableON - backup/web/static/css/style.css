@@ -1,0 +1,210 @@
+@font-face {
+    font-family: 'NanumSquare';
+    font-weight: 400;
+    font-style: normal;
+    src: url(/static/font/NanumSquare-Regular.woff2);
+    font-display: swap;
+}
+
+* {
+    inset: 0;
+}
+
+html,
+body {
+    margin: 0;
+    height: 100%;
+    overflow: hidden;
+}
+
+.order-list {
+    background: linear-gradient(180deg, #3D3226 61.59%, rgba(85, 64, 40, 0.28) 165.87%);
+    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+}
+
+.top-line {
+    margin-left: 5%;
+    margin-top: 10%;
+    margin-right: 5%;
+}
+
+.menu-list {
+    height: 60%;
+}
+
+.bottom-line {
+    margin-left: 5%;
+    margin-top: 5%;
+    margin-right: 5%;
+}
+
+.menu-text {
+    color: white;
+    margin-top: 6%;
+    margin-left: 5%;
+    font-family: 'NanumSquare', sans-serif;
+    font-size: 1.7rem;
+}
+
+hr {
+    margin-top: 1px;
+    height: 2px;
+    border: 0;
+    background-color: black;
+}
+
+.top-line>hr {
+    margin: 0;
+    margin-top: 1%;
+    background-color: white;
+}
+
+.bottom-line>hr {
+    background-color: white
+}
+
+.long-line {
+    width: 100%;
+    height: 1px;
+    background-color: gray;
+    margin: 0;
+}
+
+
+.short-line {
+    width: 100%;
+    height: 1px;
+    background-color: white;
+}
+
+.menu {
+    margin-top: 0%;
+    max-height: 80vh;
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+
+.menu::-webkit-scrollbar {
+    width: 0;
+    background: transparent;
+}
+
+.menu img {
+    margin-top: 5%;
+    width: 100%;
+}
+
+.order-btn {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+    margin-top: 3%;
+}
+
+.order-btn img {
+    max-width: 60%;
+    height: auto;
+}
+
+.order-background {
+    position: relative;
+    width: 90%;
+    height: 70px;
+    left: 5%;
+    background: linear-gradient(to right, #ececec 20%, #564A41 20%);
+    border-radius: 10px;
+    box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.5);
+    margin-bottom: 6%;
+    align-items: center;
+    display: flex;
+}
+
+
+.order-background p {
+    position: absolute;
+    bottom: 30%;
+    right: 5%;
+    color: white;
+    margin: 0;
+    width: 100%;
+    font-size: 15px;
+    top: 32%;
+    left: 25%;
+    font-family: 'NanumSquare';
+}
+
+.delete {
+    position: absolute;
+    width: 7.5%;
+    /* right: -3%;
+    bottom: -12%; */
+    margin-left: 97%;
+    margin-top: 14%;
+
+}
+
+.order-quantity {
+    position: absolute;
+    width: 50%;
+    height: 60%;
+    text-align: center;
+    margin-left: 74%;
+    margin-top: 3%;
+    line-height: 45px;
+}
+
+.order-quantity div {
+    width: 20%;
+    background-color: white;
+    font-family: 'NanumSquare';
+    box-shadow: inset 4px 0px 5px rgba(0, 0, 0, 0.4);
+}
+
+.order-quantity button {
+    padding: 10px;
+    background-color: gainsboro;
+    color: black;
+}
+.order-quantity button:hover, button:active {
+    background-color: gainsboro;
+    color: black;
+}
+
+.left-btn {
+    border-radius: 7px 0 0 7px;
+    
+}
+
+.right-btn {
+    border-radius: 0px 7px 7px 0px;
+    
+}
+
+.order-menu-img {
+    /* display: block; */
+    /* position: absolute; */
+    width: 45%;
+    /* left: 5.5%; */
+    margin-left: 19px;
+}
+
+.order-list-info {
+    margin-top: 0%;
+    max-height: 100vh;
+}
+
+.scl {
+    height: 27rem;
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+
+.scl::-webkit-scrollbar {
+    width: 0;
+    background: transparent;
+}
+
+.container {
+    display: flex;
+}

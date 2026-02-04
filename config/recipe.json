@@ -1,0 +1,26 @@
+[
+  {
+    "menu_code": 1,
+    "menu_name": "따뜻한 아메리카노",
+    "cup_num": 1,
+    "water_ext_time": 0.0,
+    "ice_ext_time": 0.0,
+    "hotwater_ext_time": 10.0,
+    "coffee_product_id": 1,
+    "coffee_ext_time": 30.0,
+    "syrup": [],
+    "milk_boolean": false
+  },
+  {
+    "menu_code": 2,
+    "menu_name": "아이스 아메리카노",
+    "cup_num": 2,
+    "water_ext_time": 10.0,
+    "ice_ext_time": 3.2,
+    "hotwater_ext_time": 0.0,
+    "coffee_product_id": 1,
+    "coffee_ext_time": 30.0,
+    "syrup": [],
+    "milk_boolean": false
+  }
+]
