@@ -62,7 +62,14 @@ GET_SERVING, SERVING_INIT = 118, 618
 MOVE_HOME, HOME_INIT = 119, 619
 
 CUP_IDX   = 101 # 1: hot, 2: ice, 3: hot컵 배출, 4: ice컵 배출
+PICKUP_IDX = 102 # 1~4번 픽업 위치
 CUP_RES   = 105 # 컵 성공신호
+
+pickup_slots = {1: False, 
+                2: False, 
+                3: False, 
+                4: False} # False: 빈곳, True: 사용중
+
 
 
 # --- [주소 상수 정의 (IO Map)] ---
