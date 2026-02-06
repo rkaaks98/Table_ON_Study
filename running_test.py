@@ -70,8 +70,6 @@ pickup_slots = {1: False,
                 3: False, 
                 4: False} # False: 빈곳, True: 사용중
 
-
-
 # --- [주소 상수 정의 (IO Map)] ---
 # Card 5 (Unit 5)
 DO_ICE_BTN    = 3200
@@ -247,7 +245,7 @@ class RobotController:
   def get_robot_status(self):
       if self.client is None: return None
       try:
-        status_data = self.client.get_control_data()
+        status_data = self.client.get_robot_data()
         op_state = status_data.get('op_state')
         is_home = status_data.get('is_home')
         if op_state == 0:   return "OFFLINE"
@@ -257,9 +255,7 @@ class RobotController:
         if op_state in [3, 4, 16]: return "RECOVERING"
         if op_state == 7:   return "TEACHING_MODE"
         if op_state == 6:   return "MOVING"
-        if op_state == 5:
-          if is_home: return "READY_AT_HOME"
-          else: return "READY_STATION"
+        if op_state == 5:   return "READY"
         return f"STATE_{op_state}"
       except Exception as e:
         logger.error(f"[Robot] Get Status Error: {e}")
@@ -305,10 +301,19 @@ class RobotController:
     except Exception as e:
       logger.error(f"[Robot] Move Home Error: {e}")
       return False
+    
+  def get_robot_data(self):
+    if self.client is None: return None
+    try:
+      status_data = self.client.get_control_data()
+      return status_data
+    except Exception as e:
+      logger.error(f"[Robot] Get Data Error: {e}")
+      return None
 
 # 전역 객체 생성
 robot = RobotController("192.168.0.7")
-device = DeviceController("COM3") 
+device = DeviceController("/dev/ttyUSB485") 
     
 '''
     utility function area
@@ -328,6 +333,21 @@ def clear_queue(q):
 '''
     EndPoint Area
 '''
+
+@app.route('/pickup/complete/<int:slot_idx>', methods=['GET'])
+def pickup_complete(slot_idx):
+  if slot_idx in pickup_slots:
+    pickup_slots[slot_idx] = False
+    logger.info(f"[Pickup] Slot {slot_idx} completed")
+    return jsonify({"status": "success", "message": f"Slot {slot_idx} completed"})
+  else:
+    return jsonify({"status": "error", "message": "Invalid slot index"}), 400
+
+@app.route('/get_robot_data', methods=['GET'])
+def get_robot_data():
+  data = robot.get_robot_data()
+  return jsonify({"status": "success", "message": data})
+
 @app.route('/set_robot_status/<int:status>', methods=['GET'])
 def set_robot_status(status):
     if status == 1:
@@ -478,10 +498,32 @@ def run_robot_sequence(robot, recipe):
             robot.wait_for_init(COFFEE_N_INIT)
 
     # [Step 5] 서빙 및 홈 복귀
+    
+    target_slot = None
+    while target_slot is None:
+      for slot_num in range(1, 5):
+        if not pickup_slots[slot_num]:
+          target_slot = slot_num
+          break
+      if target_slot is None:
+        logger.warning("[Seq] No available pickup slot")
+        time.sleep(1)
+        
+        if not robot.is_running:
+          logger.warning("[Seq] Robot is not running")
+          return False
+        
+    logger.info(f"[Seq] Empty Slot Found: {target_slot} Serving ready")
+    robot.write_register(PICKUP_IDX, target_slot)
+    
     robot.send_command(GET_SERVING)
-    robot.wait_for_init(SERVING_INIT)
-    robot.send_command(SERVING_N)
-    robot.wait_for_init(SERVING_N_INIT)
+    if robot.wait_for_init(SERVING_INIT):
+      robot.send_command(SERVING_N)
+      if robot.wait_for_init(SERVING_N_INIT):
+        logger.info(f"[Seq] Serving {target_slot} Done")
+        
+        pickup_slots[target_slot] = True
+        logger.info(f"[Seq] Serving Slot {target_slot} Freed")
     
     robot.send_command(MOVE_HOME)
     robot.wait_for_init(HOME_INIT)
